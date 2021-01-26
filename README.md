@@ -1,6 +1,8 @@
 # ble-pcap-analyzer
 Analyzes BLE .pcap files and generates a human-readable output with dereferenced UUIDs
 
+This is a fancified version of https://github.com/the-girl-who-lived/ble_pcap_dissector
+
 Example:
 ```
 $ ./analyze-ble-pcap.py -p hci.pcap -c ble_char.txt 
