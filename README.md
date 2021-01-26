@@ -2,6 +2,7 @@
 Analyzes BLE .pcap files and generates a human-readable output with dereferenced UUIDs
 
 Example:
+```
 $ ./analyze-ble-pcap.py -p hci.pcap -c ble_char.txt 
 Reading gatttool output from ble_char.txt
 Found 12 lines of output.
@@ -36,3 +37,4 @@ optional arguments:
                         output for future use.
   -o, --overwrite       If output file exists and a MAC address is supplied,
                         overwrite the file with gatttool output.
+```
