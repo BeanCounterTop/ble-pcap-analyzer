@@ -1,7 +1,8 @@
 # ble-pcap-analyzer
-Analyzes BLE .pcap files and generates a human-readable output with dereferenced UUIDs
+Analyzes BLE .pcap files and generates a human-readable output with dereferenced UUIDs.
+It scrapes handles/characteristics from the target device via gatttool for dereferencing purposes.
 
-This is a fancified version of https://github.com/the-girl-who-lived/ble_pcap_dissector
+This is basically a fancified version of https://github.com/the-girl-who-lived/ble_pcap_dissector
 
 Example:
 ```
