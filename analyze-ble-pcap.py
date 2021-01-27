@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 
 import os
-import binascii
-import codecs
 from scapy.all import *
-import sys
 import re
 import subprocess
 from ble_uuids import UUIDS
 import argparse
-import struct
 
 
 parser = argparse.ArgumentParser(description='Process arguments.')
@@ -25,15 +21,15 @@ pcap_file = args.pcap_file
 mac = args.mac
 overwrite = args.overwrite
 
-opcode_dict = {18: "write_req", 82: "write_cmd"}
+opcode_dict = {18: "write_req", 82: "write_cmd", 27: "recv_val"}
 
-opcode_filter_list = [18, 82]
+opcode_filter_list = [18, 82, 27]
 
 
 def create_gatttool_output_file(gatttool_output_file, mac_address):
         try:
             with open(gatttool_output_file, 'w') as output_file:
-                subprocess.call(['gatttool', '-b', mac_address, '--characteristics'], stdout=output_file)
+                subprocess.call(['gatttool', '-t', 'random', '-b', mac_address, '--characteristics'], stdout=output_file)
             
             with open(gatttool_output_file, 'r') as output_file:
                 return output_file.readlines()
@@ -103,7 +99,8 @@ def get_uuid(ble_data, handle):
             break
 
     if uuid:
-        known_uuids = [a for a in dir(UUIDS) if 'CHARACTERISTIC' in a]
+        known_uuids = dir(UUIDS)
+
         for known_uuid_name in known_uuids:
             known_uuid_value = str(getattr(UUIDS, known_uuid_name)).lower()
             if known_uuid_value == uuid:
@@ -124,10 +121,12 @@ def display_hex(hex_string):
 def get_hex_ascii(pcap, i, pkt_opcode):
     global opcode_dict
     global ble_data
-
-    pcap_line_ascii = repr_hex(pcap[i].data)
+    if pkt_opcode == 27:
+        pcap_line = pcap[i].payload.payload.payload.payload.payload.value
+    else:
+        pcap_line = pcap[i].data
+    pcap_line_ascii = repr_hex(pcap_line)
     pcap_line_hex = display_hex(pcap_line_ascii)
-
     handle = hex(pcap[i].gatt_handle)
 
     opcode_type = opcode_dict[pkt_opcode]
